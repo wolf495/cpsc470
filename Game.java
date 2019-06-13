@@ -6,7 +6,10 @@
  */
 package big_project;
 
+import java.util.ArrayList;
 import java.util.Random;
+
+import sun.tools.jar.resources.jar;
 
 /**
  * A program that can be used by students to test their Player algorithms against a randomly dealt
@@ -15,14 +18,43 @@ import java.util.Random;
  */
 public class Game {
 
+	private static Game theInstance; 
+	private ArrayList<PlayerAbstract> players;
+	private Factory playerFactory;
+	private String[] cards; 
     
-    public Game(){
+    private Game() {
+		players = new ArrayList<PlayerAbstract>(4);
+		playerFactory = new Factory();
+		
+	}
     
-    }
+    public void Start() {
+
+	}
     
-    public void Start(){}
-    
-    public void End(){}
+	public void End() {
+
+	}
+	
+	public static Game getInstance() {
+		if(theInstance == null) {
+			theInstance = Game();
+		}
+		return theInstance;
+	}
+
+	private void populateDeck() {
+
+	}
+
+	public void dealCard() {
+
+	}
+
+	public void receiveInput(String input) {
+
+	}
     
     
 /*

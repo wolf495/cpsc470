@@ -1,74 +1,73 @@
 package big_project;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
 public class MyClient {
+public static void main(String args[]) throws IOException{
 
-    private boolean hasConnections = false;
-    private String serverIp;
-    private int port;
-    private Scanner listener;
-    private Socket socket;
 
-    public class Connection implements Runnable {
+    InetAddress address=InetAddress.getLocalHost();
+    Socket s1=null;
+    String line=null;
+    BufferedReader br=null;
+    BufferedReader is=null;
+    PrintWriter os=null;
+    String name = "";
+    
+    try {
+        s1=new Socket(address, 4445); // You can use static final constant PORT_NUM
+        br= new BufferedReader(new InputStreamReader(System.in));
+        is=new BufferedReader(new InputStreamReader(s1.getInputStream()));
+        os= new PrintWriter(s1.getOutputStream());
+    }
+    catch (IOException e){
+        e.printStackTrace();
+        System.err.print("IO Exception");
+    }
 
-        @Override
-        public void run() {
-            System.out.println("Attempting to connect");
-            if (hasConnections) {
-                System.out.println("Connection already established");
-            } else {
-                while (!hasConnections) {
-                    try {
-                        socket = new Socket(serverIp, port);
-                        hasConnections = true;
-                        listener = new Scanner(socket.getInputStream());
-                        System.out.println("Connection established");
-                        Thread.sleep(2000);
-                    } catch (IOException e) {
-                        System.out.println("Failure establishing connection on " + serverIp + ":" + port);
-                        try {
-                            Thread.sleep(1000);
-                        } catch (InterruptedException e1) {
-                            // TODO Auto-generated catch block
-                            e1.printStackTrace();
-                        }
-                        System.out.println("Retrying connection");
-                    } catch (InterruptedException e) {
-                        // TODO Auto-generated catch block
-                        e.printStackTrace();
-                    }
-                }
-                System.out.println("Test message received: " + listener.nextLine());
-                while (!socket.isClosed()) {
-                    String data = listener.nextLine();
-                    System.out.println("Received Message: " + data);
-                }
+    System.out.println("Client Address : "+address);
+    System.out.println("Enter Data to echo Server ( Enter QUIT to end):");
+
+    String response=null;
+    try{
+        line=br.readLine(); 
+        while(line.compareTo("QUIT")!=0){
+                /*if(name == ""){
+                    System.out.println("Enter Player Name: ");
+                    os.println(line);
+                    os.flush();
+                }else{*/
+                os.println(line);
+                os.flush();
+                response=is.readLine();
+                System.out.println("Server Response : "+response);
+                line=br.readLine();
+                //}
+                
+                
             }
-        }
+
+
+
+    }
+    catch(IOException e){
+        e.printStackTrace();
+    System.out.println("Socket read Error");
+    }
+    finally{
+
+        is.close();os.close();br.close();s1.close();
+                System.out.println("Connection Closed");
+
     }
 
-    public MyClient(String serverIp, int port) {
-        this.serverIp = serverIp;
-        this.port = port;
-        this.hasConnections = false;
-        ExecutorService threadPool = Executors.newFixedThreadPool(1);
-        threadPool.execute(new Connection());
-    }
-
-    /*
-    public static void main(String[] args) {
-
-        new MyClient("127.0.0.1", 6000);
-        try {
-            Thread.currentThread().join();
-        } catch (InterruptedException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        }
-    }*/
+}
 }

@@ -28,4 +28,9 @@ public class SamplePlayer extends PlayerAbstract{
 		return bet;
 	}
 
+    public boolean quit() {
+		return false;
+        
+    }
+
 }

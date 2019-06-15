@@ -34,7 +34,7 @@ public class Game {
     public void Start() {
 		createPlayers();
 
-		for(Player p: players) {
+		for(PlayerAbstract p: players) {
 			dealCard(p);
 			dealCard(p);
 		}
@@ -46,19 +46,18 @@ public class Game {
 	}
 
 	public void Round() {
-		for(Player p : players) {
+		for(PlayerAbstract p : players) {
 			if(p.quit() || p.getBank() <= 0) {
 				players.remove(p);
 				System.out.println(p.getName() + " has left the table");
 			}
 		}
-		for(Player p : players) {
-			if(p.placeBet()) {
+		for(PlayerAbstract p : players) {
+			//p.placeBet();
+			//if(p.doesPlayerHit(playerCards, dealerUpCard)) {
 
-			}
-			if(p.doesPlayerHit()) {
-				dealCard(p);
-			}
+			//}
+			
 		}
 
 	}
@@ -74,7 +73,7 @@ public class Game {
 
 	}
 
-	public void dealCard(Player p) {
+	public void dealCard(PlayerAbstract p) {
 		p.takeCard(deck.get(0));
 		deck.remove(0);
 
@@ -82,7 +81,7 @@ public class Game {
 
 	private void createPlayers() {
 		for(int i = 0; i < 4; i++) {
-			playerFactory.Create(4, names);
+			//playerFactory.Create(4, names);
 		}
 	}
 
@@ -94,7 +93,7 @@ public class Game {
 /*
 	public static void main(String[] args) {
 		// create and initialize player
-		SamplePlayer player1 = new SamplePlayer(); // change this to your class name like YourLastNamePlayer
+		SamplePlayerAbstract player1 = new SamplePlayer(); // change this to your class name like YourLastNamePlayer
 		int bank1 = 100;
 		
 		// generate a random list of cards for a sample deck of 20

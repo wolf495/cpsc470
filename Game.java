@@ -21,25 +21,51 @@ public class Game {
 	private static Game theInstance; 
 	private ArrayList<PlayerAbstract> players;
 	private Factory playerFactory;
-	private String[] cards; 
+	private ArrayList<String> deck;
+	private ArrayList<String> discardPile; 
     
     private Game() {
 		players = new ArrayList<PlayerAbstract>(4);
 		playerFactory = new Factory();
-		
+		deck = new ArrayList<String>();
+		discardPile = new ArrayList<String>();
 	}
     
     public void Start() {
+		createPlayers();
+
+		for(Player p: players) {
+			dealCard(p);
+			dealCard(p);
+		}
 
 	}
     
 	public void End() {
 
 	}
+
+	public void Round() {
+		for(Player p : players) {
+			if(p.quit() || p.getBank() <= 0) {
+				players.remove(p);
+				System.out.println(p.getName() + " has left the table");
+			}
+		}
+		for(Player p : players) {
+			if(p.placeBet()) {
+
+			}
+			if(p.doesPlayerHit()) {
+				dealCard(p);
+			}
+		}
+
+	}
 	
 	public static Game getInstance() {
 		if(theInstance == null) {
-			theInstance = Game();
+			theInstance = new Game();
 		}
 		return theInstance;
 	}
@@ -48,12 +74,20 @@ public class Game {
 
 	}
 
-	public void dealCard() {
+	public void dealCard(Player p) {
+		p.takeCard(deck.get(0));
+		deck.remove(0);
 
 	}
 
-	public void receiveInput(String input) {
+	private void createPlayers() {
+		for(int i = 0; i < 4; i++) {
+			playerFactory.Create(4, names);
+		}
+	}
 
+	public String receiveInput(String input) {
+		return input;
 	}
     
     

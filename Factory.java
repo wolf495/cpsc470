@@ -1,11 +1,11 @@
-@author Joseph Haythorn
+//@author Joseph Haythorn
 package big_project;
 
 
 public class Factory {
 	private static Factory theInstance;
 	
-	private Factory(){}
+	private Factory() {}
 
 	public static Factory getInstance(){
 		if(theInstance == null)	theInstance = new Factory();

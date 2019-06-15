@@ -26,4 +26,8 @@ public abstract class PlayerAbstract {
     public void takeCard(String card) {
         hand.add(card);
     }
+
+    public ArrayList<String> getHand() {
+        return hand;
+    }
 }

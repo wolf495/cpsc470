@@ -23,28 +23,26 @@ public class Game {
 	private ArrayList<PlayerAbstract> players;
 	private Factory playerFactory;
 	private ArrayList<String> deck;
-	private ArrayList<String> discardPile;
+	private ArrayList<String> dealerHand;
 
     
-    private Game() {
-		players = new ArrayList<PlayerAbstract>(4);
+	private Game() {
+		players = new ArrayList<PlayerAbstract>();
 		playerFactory = Factory.getInstance();
 		deck = new ArrayList<String>();
-		discardPile = new ArrayList<String>();
+		dealerHand = new ArrayList<String>();
 	}
-    
-    public void Start() {
-		createPlayers();
-
+	
+	public void Start() {
+		populateDeck();
 		for(PlayerAbstract p: players) {
-			dealCard(p);
 			dealCard(p);
 		}
 
 	}
     
 	public void End() {
-
+		
 	}
 
 	public void Round() {
@@ -56,11 +54,13 @@ public class Game {
 		}
 		for(PlayerAbstract p : players) {
 			//p.placeBet();
-			//if(p.doesPlayerHit(playerCards, dealerUpCard)) {
-
-			//}
-			
+			if(p.doesPlayerHit(playerCards, dealerHand.get(0))) {
+				dealCard(p);
+			}
+			dealerHand.add(deck.get(0));
+			deck.remove(0);
 		}
+		collectCards();
 
 	}
 	
@@ -71,10 +71,19 @@ public class Game {
 		return theInstance;
 	}
 
+	private void collectCards() {
+		for(PlayerAbstract p: players) {
+			for(String c : p.getHand()) {
+				deck.add(c);
+			}
+		}
+		Collections.shuffle(deck);
+	}
+
 	private void populateDeck() {
-		String[] cards = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+		String[] cards = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
 		for(int i = 0; i < 13; i++) {
-			for(int j = 0; i < 4; i++) {
+			for(int j = 0; j < 4; j++) {
 				deck.add(cards[i]);
 			}
 		}
@@ -84,20 +93,12 @@ public class Game {
 	public void dealCard(PlayerAbstract p) {
 		p.takeCard(deck.get(0));
 		deck.remove(0);
-		if(deck.isEmpty()) {
-			populateDeck();
-		}
 	}
 
-	private void createPlayer(String playerName) {
-		for(int i = 0; i < 4; i++) {
-			players.add(playerFactory.Create(playerName));
-		}
+	public void joinPlayer(String playerName) {
+		players.add(playerFactory.Create(playerName));
 	}
 
-	public String receiveInput(String input) {
-		return input;
-	}
     
     
 /*

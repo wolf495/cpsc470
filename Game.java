@@ -26,7 +26,7 @@ public class Game {
     
     private Game() {
 		players = new ArrayList<PlayerAbstract>(4);
-		playerFactory = new Factory();
+		playerFactory = Factory.getInstance();
 		deck = new ArrayList<String>();
 		discardPile = new ArrayList<String>();
 	}

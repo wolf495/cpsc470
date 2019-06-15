@@ -21,6 +21,7 @@ public static void main(String args[]) throws IOException{
     BufferedReader is=null;
     PrintWriter os=null;
     String name = "";
+    boolean locked = false;
     
     try {
         s1=new Socket(address, 4445); // You can use static final constant PORT_NUM
@@ -34,23 +35,32 @@ public static void main(String args[]) throws IOException{
     }
 
     System.out.println("Client Address : "+address);
-    System.out.println("Enter Data to echo Server ( Enter QUIT to end):");
-
+    //System.out.println("Enter Data to echo Server ( Enter QUIT to end):");
+    System.out.println("Enter Name: ");
     String response=null;
     try{
-        line=br.readLine(); 
-        while(line.compareTo("QUIT")!=0){
-                /*if(name == ""){
-                    System.out.println("Enter Player Name: ");
+        line=br.readLine();
+        //name = line;
+        while(line.indexOf("QUIT")<0){
+                if(name == ""){
+                    //System.out.println("Enter Player Name: ");
+                    name = line;locked = true;
                     os.println(line);
                     os.flush();
-                }else{*/
-                os.println(line);
-                os.flush();
-                response=is.readLine();
-                System.out.println("Server Response : "+response);
-                line=br.readLine();
-                //}
+                }
+                else{
+                    if(locked){
+                        response=is.readLine();
+                        System.out.println("Game>>"+response);
+                    }else{
+                        line=br.readLine();
+                        line = name+":"+line;
+                        os.println(line);
+                        os.flush();
+                    }
+                }
+                
+  
                 
                 
             }

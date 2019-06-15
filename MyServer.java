@@ -10,6 +10,7 @@ import java.net.InetAddress;
 import java.net.ServerSocket;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -68,6 +69,7 @@ class ServerThread extends Thread{
     PrintWriter os=null;
     Socket s=null;
     int player_tot;
+    Game game = Game.getInstance();
 
     public ServerThread(Socket s){
         this.s=s;
@@ -86,17 +88,18 @@ class ServerThread extends Thread{
     if(!(check > player_tot)){
     try {
         line=is.readLine();
-        while(line.compareTo("QUIT")!=0){ //--game logic?
+        System.out.println("New player: "+line);
+        while(line.indexOf("QUIT")<0){ //--game logic?
+            if(line.indexOf(":")<0){
+                game.addPlayer(line);
+                os.println("You are registered as '"+line+"'\tPlease wait for other players...");os.flush();
 
-            os.println(line);
-            os.flush();
+            }else{
+                //os.println(line);os.flush();
+                System.out.println(line);
+            }
             
-            
-            System.out.println("Response to Client  :  "+line);
             line=is.readLine();
-            
-            
-            
         }   
     } catch (IOException e) {
 

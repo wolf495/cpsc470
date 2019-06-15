@@ -7,6 +7,7 @@
 package big_project;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import sun.tools.jar.resources.jar;
@@ -22,14 +23,15 @@ public class Game {
 	private ArrayList<PlayerAbstract> players;
 	private Factory playerFactory;
 	private ArrayList<String> deck;
-	private ArrayList<String> discardPile; 
+	private ArrayList<String> discardPile;
+
     
     private Game() {
-		players = new ArrayList<PlayerAbstract>(4);
-		playerFactory = new Factory();
-		deck = new ArrayList<String>();
-		discardPile = new ArrayList<String>();
-	}
+			players = new ArrayList<PlayerAbstract>(4);
+			playerFactory = new Factory();
+			deck = new ArrayList<String>();
+			discardPile = new ArrayList<String>();
+		}
     
     public void Start() {
 		createPlayers();
@@ -70,18 +72,26 @@ public class Game {
 	}
 
 	private void populateDeck() {
-
+		String[] cards = {"1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+		for(int i = 0; i < 13; i++) {
+			for(int j = 0; i < 4; i++) {
+				deck.add(cards[i]);
+			}
+		}
+		Collections.shuffle(deck);
 	}
 
 	public void dealCard(PlayerAbstract p) {
 		p.takeCard(deck.get(0));
 		deck.remove(0);
-
+		if(deck.isEmpty()) {
+			populateDeck();
+		}
 	}
 
-	private void createPlayers() {
+	private void createPlayer(String playerName) {
 		for(int i = 0; i < 4; i++) {
-			//playerFactory.Create(4, names);
+			players.add(playerFactory.Create(playerName));
 		}
 	}
 

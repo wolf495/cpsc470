@@ -2,23 +2,46 @@ package big_project;
 
 import java.util.ArrayList;
 
-
 public class PlayerAlfredo extends PlayerAbstract {
     
     public boolean doesPlayerHit(String dealerUpCard) {
-        return true;
+        boolean decision=false;
+        int mypoints = BlackjackRules.countPoints(hand);
+        int dealerpoints = BlackjackRules.getCardPoints(dealerUpCard);
+        //boolean dealer_hits = BlackjackRules.doesDealerHit(dealerUpCard);
+        int face_cards = 0;
+        boolean caution = (this.bank<=50);
+        for(String i : hand){
+            if(i == "J" ||i == "Q" ||i == "K" ||i == "A"){face_cards++;}
+        }
+        if(mypoints>=21){decision = false;}
+        else if(mypoints >= 16 && face_cards > 0 &&caution){decision = false;}
+        else if(mypoints <= 16 && dealerpoints <=10 && caution){ decision = false;}
+        else{decision = true;}
+        
+        return decision;
+    }
+    
+    @Override
+    public int placeBetInitial() {
+        return 20;
     }
     
     public int placeBet(ArrayList<String> playedCards) {
-        return 0;
-    }
-
-    public int placeBetInitial() {
-        
+        int amount = 0;
+        boolean caution = (this.bank<=50);
+        if(caution){amount = 0;}
+        else{amount = 10;}
+        return amount;
     }
 
     public boolean quit() {
-        return false;
+        boolean out = false;
+        if(bank <= 20){out = true;}
+        return out;
     }
 
+
+
+    
 }

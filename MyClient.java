@@ -9,6 +9,8 @@ import java.net.Socket;
 import java.util.Scanner;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class MyClient {
 public static void main(String args[]) throws IOException{
@@ -22,6 +24,8 @@ public static void main(String args[]) throws IOException{
     PrintWriter os=null;
     String name = "";
     boolean locked = false;
+    String recipient ="";
+    String message = "";
     
     try {
         s1=new Socket(address, 4445); // You can use static final constant PORT_NUM
@@ -43,7 +47,7 @@ public static void main(String args[]) throws IOException{
         //name = line;
         while(line.indexOf("QUIT")<0){
                 if(name == ""){
-                    //System.out.println("Enter Player Name: ");
+                    //System.out.println("\n");
                     name = line;locked = true;
                     os.println(line);
                     os.flush();
@@ -51,7 +55,22 @@ public static void main(String args[]) throws IOException{
                 else{
                     if(locked){
                         response=is.readLine();
-                        System.out.println("Game>>"+response);
+                        //System.out.println("\n");
+                        recipient = response.substring(0,response.lastIndexOf(":"));
+                        message = response.substring(response.lastIndexOf(":")+1);
+                        //System.out.println("rec-"+recipient+"\nmess-"+message);
+                        if(recipient.equals(name) || recipient.equals("All")){
+                            System.out.println("Game>> "+message);
+                        }
+                        line = name+":Waiting";
+                        os.println(line);
+                        os.flush();
+                        try {
+                            //System.out.println("SLEEP!");
+                            Thread.sleep(4000);
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(MyClient.class.getName()).log(Level.SEVERE, null, ex);
+                        }
                     }else{
                         line=br.readLine();
                         line = name+":"+line;

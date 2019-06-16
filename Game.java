@@ -41,11 +41,19 @@ public class Game {
 	public void Round() {
 		for(PlayerAbstract p: players) {
 			p.placeBetInitial();
-			dealCard(p.getHand());
-			dealCard(dealerHand);
-			dealCard(p.getHand());
-			dealCard(dealerHand);
+			System.out.println(p.getName() + " makes a bet of " + p.getBet());
 		}
+		for(PlayerAbstract p: players) {
+			dealCard(p.getHand());
+			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
+		}
+		dealCard(dealerHand);
+		System.out.println("Dealer got a " + dealerHand.get(0));
+		for(PlayerAbstract p: players) {
+			dealCard(p.getHand());
+			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
+		}
+		dealCard(dealerHand);
 		for(PlayerAbstract p: players) {
 			if(checkBlackjack(p.getHand())) {
 			} else {
@@ -125,7 +133,10 @@ public class Game {
 	public String getDealerTopCard() {
 		return dealerHand.get(0);
 	}
-    
+	
+	public boolean hasPlayers() {
+		return players.size() > 0;
+	}
     
 /*
 	public static void main(String[] args) {

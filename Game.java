@@ -85,6 +85,7 @@ public class Game {
 			}
 		}
 		collectCards();
+		clearHand(dealerHand);
 		for(PlayerAbstract p : players) {
 			if(p.quit() || p.getBank() <= 0) {
 				players.remove(p);
@@ -125,6 +126,10 @@ public class Game {
 	}
 
 	public void dealCard(ArrayList<String> s) {
+		if(deck.isEmpty()) {
+			deck = Collections.shuffle(discardPile);
+			discardPile.clear();
+		}
 		s.add(deck.get(0));
 		deck.remove(0);
 	}
@@ -155,6 +160,20 @@ public class Game {
 		}
 		hand.clear();
 	}
+
+	public int getPlayerCount() {
+		return players.size();
+	}
+
+	public ArrayList<PlayerAbstract> getPlayers() {
+		return players;
+	}
+
+	public void removePlayer(PlayerAbstract player) {
+		players.remove(player);
+	}
+
+
     
 /*
 	public static void main(String[] args) {

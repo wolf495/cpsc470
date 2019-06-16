@@ -12,11 +12,7 @@ import java.util.Random;
 
 import sun.tools.jar.resources.jar;
 
-/**
- * A program that can be used by students to test their Player algorithms against a randomly dealt
- * hand. The second line of the main() method must be changed by replacing "SamplePlayer" with the name of
- * the student's file (usually StudentLastNamePlayer)
- */
+
 public class Game {
 
 	private static Game theInstance; 
@@ -68,8 +64,19 @@ public class Game {
 		while(BlackjackRules.doesDealerHit(dealerCards)) {
 			dealCard(dealerHand);
 		}
-
-		
+		for(PlayerAbstract p: players) {
+			int dealerPoints = BlackjackRules.countPoints(dealerHand);
+			int playerPoints = BlackjackRules.countPoints(p.getHand());
+			if(dealerPoints > playerPoints) {
+				p.setBet(0);
+			} else if(dealerPoints == playerPoints) {
+				p.setBank(p.getBank() + p.getBet());
+				p.setBet(0);
+			} else {
+				p.setBank(p.getBank() + p.getBet() * 2);
+				p.setBet(0);
+			}
+		}
 		collectCards();
 		for(PlayerAbstract p : players) {
 			if(p.quit() || p.getBank() <= 0) {
@@ -90,7 +97,7 @@ public class Game {
 	private void collectCards() {
 		for(PlayerAbstract p: players) {
 			for(String c : p.getHand()) {
-				deck.add(c);
+				discardPile.add(c);
 			}
 		}
 		Collections.shuffle(deck);
@@ -115,6 +122,9 @@ public class Game {
 		players.add(playerFactory.Create(playerName));
 	}
 
+	public String getDealerTopCard() {
+		return dealerHand.get(0);
+	}
     
     
 /*

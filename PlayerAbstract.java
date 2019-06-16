@@ -5,6 +5,7 @@ import java.util.ArrayList;
 public abstract class PlayerAbstract {
     String name;
     int bank;
+    int bankStart = bank;
     ArrayList<String> hand;
     int bet;
     boolean hasBlackJack;
@@ -39,5 +40,12 @@ public abstract class PlayerAbstract {
         hand.clear();
     }
 
+    public int getBet() {
+        return bet;
+    }
+
+    public void setBet(int newBet) {
+        bet = newBet;
+    }
 
 }

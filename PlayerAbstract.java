@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public abstract class PlayerAbstract {
     String name;
     int bank;
-    int bankStart = bank;
+    int bankStart;
     ArrayList<String> hand;
     int bet;
     boolean hasBlackJack;
@@ -36,16 +36,17 @@ public abstract class PlayerAbstract {
         return hand;
     }
 
-    public void clearHand() {
-        hand.clear();
-    }
-
     public int getBet() {
         return bet;
     }
 
     public void setBet(int newBet) {
         bet = newBet;
+    }
+
+    public void setBankStart(int bank) {
+        this.bank = bank;
+        bankStart = bank;
     }
 
 }

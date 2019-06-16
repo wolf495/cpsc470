@@ -32,10 +32,9 @@ public class Game {
 	
 	public void Start() {
 		populateDeck();
-	}
-    
-	public void End() {
-
+		for(PlayerAbstract p: players) {
+			p.setBankStart(1000);
+		}
 	}
 
 	public void Round() {
@@ -55,14 +54,14 @@ public class Game {
 		}
 		dealCard(dealerHand);
 		for(PlayerAbstract p: players) {
-			if(checkBlackjack(p.getHand())) {
+			if(checkBlackjack(p)) {
 			} else {
 				boolean stay = false;
 				while(!stay) {
 					if(p.doesPlayerHit(dealerHand.get(0))) {
 						stay = false;
 						dealCard(p.getHand());
-						stay = checkBlackjack(p.getHand());
+						stay = checkBlackjack(p);
 					} else {
 						stay = true;
 					}
@@ -92,6 +91,10 @@ public class Game {
 				System.out.println(p.getName() + " has left the table");
 			}
 		}
+
+	}
+
+	public void End() {
 
 	}
 	
@@ -136,6 +139,21 @@ public class Game {
 	
 	public boolean hasPlayers() {
 		return players.size() > 0;
+	}
+
+	private boolean checkBlackjack(PlayerAbstract p) {
+		if(p.getHand().contains("A") && (p.getHand().contains("K") || p.getHand().contains("Q") || p.getHand().contains("J"))) {
+			p.setBank((int)(p.getBank() + p.getBet() * 2.5));
+			clearHand(p.getHand());
+			return true;
+		}
+		return false;
+	}
+	private void clearHand(ArrayList<String> hand) {
+		for(String c : hand) {
+			discardPile.add(c);
+		}
+		hand.clear();
 	}
     
 /*

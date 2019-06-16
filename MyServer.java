@@ -54,9 +54,9 @@ public static void main(String args[]) throws UnknownHostException{
 
     }
     }
-    if(count > player_num){
-        System.out.println("connection rejected: max players");
-    }
+    //if(count > player_num){
+    //    System.out.println("connection rejected: max players");
+    //}
 
 }
 
@@ -70,6 +70,7 @@ class ServerThread extends Thread{
     Socket s=null;
     int player_tot;
     Game game = Game.getInstance();
+    String lineTest=null;
 
     public ServerThread(Socket s){
         this.s=s;
@@ -90,13 +91,30 @@ class ServerThread extends Thread{
         line=is.readLine();
         System.out.println("New player: "+line);
         while(line.indexOf("QUIT")<0){ //--game logic?
+            //System.out.println("INLINE_"+line);
             if(line.indexOf(":")<0){
                 game.addPlayer(line);
-                os.println("You are registered as '"+line+"'\tPlease wait for other players...");os.flush();
-
+                lineTest = "All:You are registered as '"+line+"'\tPlease wait for other players...";
+                os.println(lineTest);os.flush();
             }else{
+                if(game.getPlayerCount()!=player_tot){
+                    lineTest = "All:Waiting for players to join... "+game.getPlayerCount()+"/"+player_tot;//System.out.println(lineTest);
+                    os.println(lineTest);os.flush();
+                }else{
+                    //lineTest = "All:running";
+                    //os.println(lineTest);os.flush();
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                }
                 //os.println(line);os.flush();
-                System.out.println(line);
+                //line=is.readLine();
+                //System.out.println(line);
             }
             
             line=is.readLine();

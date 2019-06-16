@@ -6,10 +6,13 @@ public abstract class PlayerAbstract {
     String name;
     int bank;
     ArrayList<String> hand; 
+    int bet;
 
-    public abstract boolean doesPlayerHit(String[] playerCards, String dealerUpCard);
+    public abstract boolean doesPlayerHit(String dealerUpCard);
     
-    public abstract int placeBet(int bank, String[] playedCards, int numCardsLeft);
+    public abstract int placeBet(ArrayList<String> playedCards);
+
+    public abstract int placeBetInitial();
 
     //Used at the beginning of every round to check if a player is going to quit the game
     public abstract boolean quit();
@@ -30,4 +33,10 @@ public abstract class PlayerAbstract {
     public ArrayList<String> getHand() {
         return hand;
     }
+
+    public void clearHand() {
+        hand.clear();
+    }
+
+
 }

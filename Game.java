@@ -24,6 +24,7 @@ public class Game {
 	private Factory playerFactory;
 	private ArrayList<String> deck;
 	private ArrayList<String> dealerHand;
+	private ArrayList<String> discardPile;
 
     
 	private Game() {
@@ -35,32 +36,47 @@ public class Game {
 	
 	public void Start() {
 		populateDeck();
-		for(PlayerAbstract p: players) {
-			dealCard(p);
-		}
-
 	}
     
 	public void End() {
-		
+
 	}
 
 	public void Round() {
+		for(PlayerAbstract p: players) {
+			p.placeBetInitial();
+			dealCard(p.getHand());
+			dealCard(dealerHand);
+			dealCard(p.getHand());
+			dealCard(dealerHand);
+		}
+		for(PlayerAbstract p: players) {
+			if(checkBlackjack(p.getHand())) {
+			} else {
+				boolean stay = false;
+				while(!stay) {
+					if(p.doesPlayerHit(dealerHand.get(0))) {
+						stay = false;
+						dealCard(p.getHand());
+						stay = checkBlackjack(p.getHand());
+					} else {
+						stay = true;
+					}
+				}
+			}
+		}
+		while(BlackjackRules.doesDealerHit(dealerCards)) {
+			dealCard(dealerHand);
+		}
+
+		
+		collectCards();
 		for(PlayerAbstract p : players) {
 			if(p.quit() || p.getBank() <= 0) {
 				players.remove(p);
 				System.out.println(p.getName() + " has left the table");
 			}
 		}
-		for(PlayerAbstract p : players) {
-			//p.placeBet();
-			if(p.doesPlayerHit(playerCards, dealerHand.get(0))) {
-				dealCard(p);
-			}
-			dealerHand.add(deck.get(0));
-			deck.remove(0);
-		}
-		collectCards();
 
 	}
 	
@@ -90,12 +106,12 @@ public class Game {
 		Collections.shuffle(deck);
 	}
 
-	public void dealCard(PlayerAbstract p) {
-		p.takeCard(deck.get(0));
+	public void dealCard(ArrayList<String> s) {
+		s.add(deck.get(0));
 		deck.remove(0);
 	}
 
-	public void joinPlayer(String playerName) {
+	public void addPlayer(String playerName) {
 		players.add(playerFactory.Create(playerName));
 	}
 

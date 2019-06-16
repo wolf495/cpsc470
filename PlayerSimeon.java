@@ -1,13 +1,19 @@
 package big_project;
 
+import java.util.ArrayList;
+
 public class PlayerSimeon extends PlayerAbstract {
     
-    public boolean doesPlayerHit(String[] playerCards, String dealerUpCard) {
+    public boolean doesPlayerHit(String dealerUpCard) {
         return true;
     }
     
-    public int placeBet(int bank, String[] playedCards, int numCardsLeft) {
+    public int placeBet(ArrayList<String> playedCards) {
         return 0;
+    }
+
+    public int placeBetInitial() {
+
     }
 
     public boolean quit() {

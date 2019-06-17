@@ -19,12 +19,12 @@ public abstract class PlayerAbstract {
     //Used at the beginning of every round to check if a player is going to quit the game
     public abstract boolean quit();
 
-    public void setBank(int newBank){ bank = newBank;}
+    public void setBank(int newBank){ this.bank = newBank;}
 
-    public int getBank(){return bank;}
+    public int getBank(){return this.bank;}
 
     public String getName() {
-        return name;
+        return this.name;
     }
 
     //Used to add a card to the player's hand
@@ -33,20 +33,28 @@ public abstract class PlayerAbstract {
     }
 
     public ArrayList<String> getHand() {
-        return hand;
+        return this.hand;
     }
 
     public int getBet() {
-        return bet;
+        return this.bet;
     }
 
     public void setBet(int newBet) {
-        bet = newBet;
+        this.bet = newBet;
     }
 
     public void setBankStart(int bank) {
         this.bank = bank;
-        bankStart = bank;
+        this.bankStart = bank;
+    }
+
+    public void setBlackjack(boolean hasBlackJack) {
+      this.hasBlackJack = hasBlackJack;
+    }
+
+    public boolean gethasBlackjack() {
+      return hasBlackJack;
     }
 
 }

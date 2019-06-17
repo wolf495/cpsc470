@@ -29,7 +29,8 @@ public class Game {
 		deck = new ArrayList<String>();
 		dealerHand = new ArrayList<String>();
 	}
-	
+	//Fills the draw pile with 1 deck of cards and then shuffles it
+	//Then set every player's starting pool of cash to $1000
 	public void Start() {
 		populateDeck();
 		for(PlayerAbstract p: players) {
@@ -38,26 +39,33 @@ public class Game {
 	}
 
 	public void Round() {
+		//Set every players bet to their initial bet amount
 		for(PlayerAbstract p: players) {
 			p.placeBetInitial();
 			System.out.println(p.getName() + " makes a bet of " + p.getBet());
 		}
+		//Deal one card to each player's hand from the deck
 		for(PlayerAbstract p: players) {
 			dealCard(p.getHand());
 			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
 		}
+		//Deal a card to the dealer
 		dealCard(dealerHand);
 		System.out.println("Dealer got a " + dealerHand.get(0));
+		//Deal a card to each player's hand again
 		for(PlayerAbstract p: players) {
 			dealCard(p.getHand());
 			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
 		}
+		//Deal one last card to the dealer's hand again
 		dealCard(dealerHand);
 		for(PlayerAbstract p: players) {
+			//Check any player for blackjack and if they have it then pay them out and clear their hand
 			if(checkBlackjack(p)) {
 			} else {
 				boolean stay = false;
 				while(!stay) {
+					//Repeatedly Check if the player hits and if they do deal them a card and then check for blackjack
 					if(p.doesPlayerHit(dealerHand.get(0))) {
 						stay = false;
 						dealCard(p.getHand());
@@ -72,21 +80,27 @@ public class Game {
 			dealCard(dealerHand);
 		}
 		for(PlayerAbstract p: players) {
+			//Check the points on both the dealer and 
 			int dealerPoints = BlackjackRules.countPoints(dealerHand);
 			int playerPoints = BlackjackRules.countPoints(p.getHand());
+			//If the dealer beat the player the player loses their bet
 			if(dealerPoints > playerPoints) {
 				p.setBet(0);
 			} else if(dealerPoints == playerPoints) {
+				//If the dealer and player match then the bet is returned to the player with no gain
 				p.setBank(p.getBank() + p.getBet());
 				p.setBet(0);
 			} else {
+				//If the player wins they get paid their bet
 				p.setBank(p.getBank() + p.getBet() * 2);
 				p.setBet(0);
 			}
 		}
+		//Clear the hands of every player and the dealer
 		collectCards();
 		clearHand(dealerHand);
 		for(PlayerAbstract p : players) {
+			//Check if any player has gone bust or met their quit conditions and remove them from the player's list
 			if(p.quit() || p.getBank() <= 0) {
 				players.remove(p);
 				System.out.println(p.getName() + " has left the table");
@@ -96,7 +110,7 @@ public class Game {
 	}
 
 	public void End() {
-
+		
 	}
 	
 	public static Game getInstance() {

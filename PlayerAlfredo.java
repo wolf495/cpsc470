@@ -25,6 +25,7 @@ public class PlayerAlfredo extends PlayerAbstract {
     @Override
     public int placeBetInitial() {
         bet = 20;
+        bank -= bet;
         return 20;
     }
     
@@ -34,6 +35,7 @@ public class PlayerAlfredo extends PlayerAbstract {
         if(caution){amount = 0;}
         else{amount = 10;}
         bet = amount;
+        bank -= bet;
         return amount;
     }
 

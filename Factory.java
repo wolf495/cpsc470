@@ -1,11 +1,11 @@
-@author Joseph Haythorn
+//@author Joseph Haythorn
 package big_project;
 
 
 public class Factory {
-	private Factory theInstance;
+	private static Factory theInstance;
 	
-	private Factory(){}
+	private Factory() {}
 
 	public static Factory getInstance(){
 		if(theInstance == null)	theInstance = new Factory();
@@ -27,7 +27,7 @@ public class Factory {
 			e.printStackTrace();
 		}	
 		catch(ClassNotFoundException e){
-			e.printStackTrace;
+			e.printStackTrace();
 		}
 		//should not return null
 		return null;

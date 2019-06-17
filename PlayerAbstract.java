@@ -5,17 +5,22 @@ import java.util.ArrayList;
 public abstract class PlayerAbstract {
     String name;
     int bank;
-    ArrayList<String> hand; 
+    int bankStart;
+    ArrayList<String> hand;
+    int bet;
+    boolean hasBlackJack;
 
-    public abstract boolean doesPlayerHit(String[] playerCards, String dealerUpCard);
-    
-    public abstract int placeBet(int bank, String[] playedCards, int numCardsLeft);
+    public abstract boolean doesPlayerHit(String dealerUpCard);
+
+    public abstract int placeBet(ArrayList<String> playedCards);
+
+    public abstract int placeBetInitial();
 
     //Used at the beginning of every round to check if a player is going to quit the game
     public abstract boolean quit();
-    
+
     public void setBank(int newBank){ bank = newBank;}
-    
+
     public int getBank(){return bank;}
 
     public String getName() {
@@ -26,4 +31,22 @@ public abstract class PlayerAbstract {
     public void takeCard(String card) {
         hand.add(card);
     }
+
+    public ArrayList<String> getHand() {
+        return hand;
+    }
+
+    public int getBet() {
+        return bet;
+    }
+
+    public void setBet(int newBet) {
+        bet = newBet;
+    }
+
+    public void setBankStart(int bank) {
+        this.bank = bank;
+        bankStart = bank;
+    }
+
 }

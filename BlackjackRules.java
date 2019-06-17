@@ -8,7 +8,7 @@ public class BlackjackRules {
 	 * @return the total points in the hand, where Aces are converted to 1 point only when necessary to
 	 * keep the total under 22
 	 */
-	public static int countPoints(String[] cards) {
+	public static int countPoints(ArrayList<String> cards) {
 		// loop through and convert cards
 		int totalPoints = 0;
 		int aces = 0;
@@ -28,7 +28,7 @@ public class BlackjackRules {
 	 * @param dealerCards - an array of cards ("A", "K", etc. where "0" is an empty slot with no card)
 	 * @return true if the dealer wants to hit, false if the dealer wants to stand
 	 */
-	public static boolean doesDealerHit(String[] dealerCards) {
+	public static boolean doesDealerHit(ArrayList<String> dealerCards) {
 		int totalPoints = countPoints(dealerCards);
 		return (totalPoints < 17);
 	}

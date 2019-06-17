@@ -7,59 +7,110 @@
 package big_project;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Random;
 
 import sun.tools.jar.resources.jar;
 
-/**
- * A program that can be used by students to test their Player algorithms against a randomly dealt
- * hand. The second line of the main() method must be changed by replacing "SamplePlayer" with the name of
- * the student's file (usually StudentLastNamePlayer)
- */
+
 public class Game {
 
 	private static Game theInstance; 
 	private ArrayList<PlayerAbstract> players;
 	private Factory playerFactory;
 	private ArrayList<String> deck;
-	private ArrayList<String> discardPile; 
+	private ArrayList<String> dealerHand;
+	private ArrayList<String> discardPile;
+
     
-    private Game() {
-		players = new ArrayList<PlayerAbstract>(4);
+	private Game() {
+		players = new ArrayList<PlayerAbstract>();
 		playerFactory = Factory.getInstance();
 		deck = new ArrayList<String>();
-		discardPile = new ArrayList<String>();
+		dealerHand = new ArrayList<String>();
 	}
-    
-    public void Start() {
-		createPlayers();
-
+	//Fills the draw pile with 1 deck of cards and then shuffles it
+	//Then set every player's starting pool of cash to $1000
+	public void Start() {
+		populateDeck();
 		for(PlayerAbstract p: players) {
-			dealCard(p);
-			dealCard(p);
+			p.setBankStart(1000);
 		}
-
-	}
-    
-	public void End() {
-
 	}
 
 	public void Round() {
+		//Set every players bet to their initial bet amount
+		for(PlayerAbstract p: players) {
+			p.placeBetInitial();
+			System.out.println(p.getName() + " makes a bet of " + p.getBet());
+		}
+		//Deal one card to each player's hand from the deck
+		for(PlayerAbstract p: players) {
+			dealCard(p.getHand());
+			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
+		}
+		//Deal a card to the dealer
+		dealCard(dealerHand);
+		System.out.println("Dealer got a " + dealerHand.get(0));
+		//Deal a card to each player's hand again
+		for(PlayerAbstract p: players) {
+			dealCard(p.getHand());
+			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
+		}
+		//Deal one last card to the dealer's hand again
+		dealCard(dealerHand);
+		for(PlayerAbstract p: players) {
+			//Check any player for blackjack and if they have it then pay them out and clear their hand
+			if(checkBlackjack(p)) {
+			} else {
+				boolean stay = false;
+				while(!stay) {
+					//Repeatedly Check if the player hits and if they do deal them a card and then check for blackjack
+					if(p.doesPlayerHit(dealerHand.get(0))) {
+						stay = false;
+						dealCard(p.getHand());
+						stay = checkBlackjack(p);
+					} else {
+						stay = true;
+					}
+				}
+			}
+		}
+		while(BlackjackRules.doesDealerHit(dealerCards)) {
+			dealCard(dealerHand);
+		}
+		for(PlayerAbstract p: players) {
+			//Check the points on both the dealer and 
+			int dealerPoints = BlackjackRules.countPoints(dealerHand);
+			int playerPoints = BlackjackRules.countPoints(p.getHand());
+			//If the dealer beat the player the player loses their bet
+			if(dealerPoints > playerPoints) {
+				p.setBet(0);
+			} else if(dealerPoints == playerPoints) {
+				//If the dealer and player match then the bet is returned to the player with no gain
+				p.setBank(p.getBank() + p.getBet());
+				p.setBet(0);
+			} else {
+				//If the player wins they get paid their bet
+				p.setBank(p.getBank() + p.getBet() * 2);
+				p.setBet(0);
+			}
+		}
+		//Clear the hands of every player and the dealer
+		collectCards();
+		clearHand(dealerHand);
 		for(PlayerAbstract p : players) {
+			//Check if any player has gone bust or met their quit conditions and remove them from the player's list
 			if(p.quit() || p.getBank() <= 0) {
 				players.remove(p);
 				System.out.println(p.getName() + " has left the table");
 			}
 		}
-		for(PlayerAbstract p : players) {
-			//p.placeBet();
-			//if(p.doesPlayerHit(playerCards, dealerUpCard)) {
 
-			//}
-			
-		}
+	}
 
+	public void End() {
+		
 	}
 	
 	public static Game getInstance() {
@@ -69,26 +120,74 @@ public class Game {
 		return theInstance;
 	}
 
-	private void populateDeck() {
-
-	}
-
-	public void dealCard(PlayerAbstract p) {
-		p.takeCard(deck.get(0));
-		deck.remove(0);
-
-	}
-
-	private void createPlayers() {
-		for(int i = 0; i < 4; i++) {
-			//playerFactory.Create(4, names);
+	private void collectCards() {
+		for(PlayerAbstract p: players) {
+			for(String c : p.getHand()) {
+				discardPile.add(c);
+			}
 		}
+		Collections.shuffle(deck);
 	}
 
-	public String receiveInput(String input) {
-		return input;
+	private void populateDeck() {
+		String[] cards = {"2", "3", "4", "5", "6", "7", "8", "9", "10", "J", "Q", "K", "A"};
+		for(int i = 0; i < 13; i++) {
+			for(int j = 0; j < 4; j++) {
+				deck.add(cards[i]);
+			}
+		}
+		Collections.shuffle(deck);
 	}
-    
+
+	public void dealCard(ArrayList<String> s) {
+		if(deck.isEmpty()) {
+			deck = Collections.shuffle(discardPile);
+			discardPile.clear();
+		}
+		s.add(deck.get(0));
+		deck.remove(0);
+	}
+
+	public void addPlayer(String playerName) {
+		players.add(playerFactory.Create(playerName));
+	}
+
+	public String getDealerTopCard() {
+		return dealerHand.get(0);
+	}
+	
+	public boolean hasPlayers() {
+		return players.size() > 0;
+	}
+
+	private boolean checkBlackjack(PlayerAbstract p) {
+		if(p.getHand().contains("A") && (p.getHand().contains("K") || p.getHand().contains("Q") || p.getHand().contains("J"))) {
+			p.setBank((int)(p.getBank() + p.getBet() * 2.5));
+			clearHand(p.getHand());
+			return true;
+		}
+		return false;
+	}
+	private void clearHand(ArrayList<String> hand) {
+		for(String c : hand) {
+			discardPile.add(c);
+		}
+		hand.clear();
+	}
+
+	public int getPlayerCount() {
+		return players.size();
+	}
+
+	public ArrayList<PlayerAbstract> getPlayers() {
+		return players;
+	}
+
+	public void removePlayer(PlayerAbstract player) {
+		players.remove(player);
+	}
+
+
     
 /*
 	public static void main(String[] args) {

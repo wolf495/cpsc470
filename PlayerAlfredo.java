@@ -44,8 +44,4 @@ public class PlayerAlfredo extends PlayerAbstract {
         if(bank <= 20){out = true;}
         return out;
     }
-
-
-
-    
 }

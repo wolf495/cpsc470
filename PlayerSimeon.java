@@ -14,23 +14,23 @@ public class PlayerSimeon extends PlayerAbstract {
     }
     
     public int placeBet(ArrayList<String> playedCards) {
-        if(bank <= bankStart * .1) {
+        if(bank <= bankStart * 0.1) {
             bet = bank;
-        } else if(bank <= bankStart *.25) {
-            bet = bank * .75;
-        } else if(bank <= bankStart *.5) {
-            bet = bank *.5;
-        } else if(bank <= bankStart * .75) {
-            bet = bank * .25;
+        } else if(bank <= bankStart * 0.25) {
+            bet = (int) (bank * 0.75);
+        } else if(bank <= bankStart * 0.5) {
+            bet = (int) (bank * 0.5);
+        } else if(bank <= bankStart * 0.75) {
+            bet = (int) (bank * 0.25);
         } else {
-            bet = bank * .1;
+            bet = (int) (bank * 0.1);
         }
         bank -= bet;
         return bet;
     }
 
     public int placeBetInitial() {
-        return bank * 0.1;
+        return (int) (bank * 0.1);
     }
 
     public boolean quit() {

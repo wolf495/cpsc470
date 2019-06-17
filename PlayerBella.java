@@ -14,7 +14,7 @@ public class PlayerBella extends PlayerAbstract {
     }
 
     public int placeBetInitial() {
-        
+        return 0;
     }
 
     public boolean quit() {

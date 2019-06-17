@@ -5,7 +5,7 @@ import java.util.ArrayList;
 
 public class PlayerJoseph extends PlayerAbstract {
     
-    public boolean doesPlayerHit(String[] playerCards, String dealerUpCard) {
+    public boolean doesPlayerHit(String dealerUpCard) {
         return true;
     }
     
@@ -14,7 +14,7 @@ public class PlayerJoseph extends PlayerAbstract {
     }
 
     public int placeBetInitial() {
-        
+        return 0;
     }
 
     public boolean quit() {

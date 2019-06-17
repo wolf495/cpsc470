@@ -44,20 +44,24 @@ public class Game {
 			p.placeBetInitial();
 			System.out.println(p.getName() + " makes a bet of " + p.getBet());
 		}
+
 		//Deal one card to each player's hand from the deck
 		for(PlayerAbstract p: players) {
 			dealCard(p.getHand());
 			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
 		}
+
 		//Deal a card to the dealer
 		dealCard(dealerHand);
 		System.out.println("Dealer got a " + dealerHand.get(0));
+
 		//Deal a card to each player's hand again
 		for(PlayerAbstract p: players) {
 			dealCard(p.getHand());
 			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
 		}
 		//Deal one last card to the dealer's hand again
+
 		dealCard(dealerHand);
 		for(PlayerAbstract p: players) {
 			//Check any player for blackjack and if they have it then pay them out and clear their hand
@@ -69,16 +73,17 @@ public class Game {
 					if(p.doesPlayerHit(dealerHand.get(0))) {
 						stay = false;
 						dealCard(p.getHand());
-						stay = checkBlackjack(p);
 					} else {
 						stay = true;
 					}
 				}
 			}
 		}
-		while(BlackjackRules.doesDealerHit(dealerCards)) {
+
+		while(BlackjackRules.doesDealerHit(dealerHand)) {
 			dealCard(dealerHand);
 		}
+
 		for(PlayerAbstract p: players) {
 			//Check the points on both the dealer and 
 			int dealerPoints = BlackjackRules.countPoints(dealerHand);
@@ -141,7 +146,8 @@ public class Game {
 
 	public void dealCard(ArrayList<String> s) {
 		if(deck.isEmpty()) {
-			deck = Collections.shuffle(discardPile);
+			Collections.shuffle(discardPile);
+			Collections.copy(deck, discardPile);
 			discardPile.clear();
 		}
 		s.add(deck.get(0));

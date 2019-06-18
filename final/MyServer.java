@@ -1,14 +1,16 @@
 
 package big_project;
 
-//Example 26 (updated)
+
 
 
 import java.io.DataInputStream;
 import java.io.PrintStream;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
 import java.net.ServerSocket;
+import java.net.UnknownHostException;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,70 +30,56 @@ public class MyServer {
   private static clientThread[] threads;
   private static Game game = Game.getInstance();
 
-  public static void main(String args[]) {
+  //public static void main(String args[]) {
+  public void init(int port){
 
-    // The default port number.
-    int portNumber = 4445;
-    /*if (args.length < 1) {
-      System.out.println("Usage: java MultiThreadChatServerSync <portNumber>\n"
-          + "Now using port number=" + portNumber);
-    } else {
-      portNumber = Integer.valueOf(args[0]).intValue();
-    }*/
-    
-    Scanner sc = new Scanner(System.in);
-        System.out.println("number of players: ");
+    try {
+        
+        int portNumber = port;
+
+        InetAddress address=InetAddress.getLocalHost();
+        Scanner sc = new Scanner(System.in);
+        System.out.println("SERVER ADDRESS: "+address+"\nSERVER PORT: "+portNumber+"\nnumber of players: ");
         maxClientsCount = sc.nextInt();
         
         threads = new clientThread[maxClientsCount];
         game.Start();
+        
 
-    /*
-     * Open a server socket on the portNumber (default 2222). Note that we can
-     * not choose a port less than 1023 if we are not privileged users (root).
-     */
-    try {
-      serverSocket = new ServerSocket(portNumber);
-    } catch (IOException e) {
-      System.out.println(e);
-    }
+        try {
+            serverSocket = new ServerSocket(portNumber);
+        } catch (IOException e) {
+            System.out.println(e);
+        }
+        
 
-    /*
-     * Create a client socket for each connection and pass it to a new client
-     * thread.
-     */
-    while (true) {
-      try {
-        clientSocket = serverSocket.accept();
-        int i = 0;
-        for (i = 0; i < maxClientsCount; i++) {
-          if (threads[i] == null) {
-            (threads[i] = new clientThread(clientSocket, threads)).start();
-            break;
-          }
+        while (true) {
+            try {
+                clientSocket = serverSocket.accept();
+                int i = 0;
+                for (i = 0; i < maxClientsCount; i++) {
+                    if (threads[i] == null) {
+                        (threads[i] = new clientThread(clientSocket, threads)).start();
+                        break;
+                    }
+                }
+                if (i == maxClientsCount) {
+                    PrintStream os = new PrintStream(clientSocket.getOutputStream());
+                    os.println("Server at max players. Try later.");
+                    os.close();
+                    clientSocket.close();
+                }
+            } catch (IOException e) {
+                System.out.println(e);
+            }
         }
-        if (i == maxClientsCount) {
-          PrintStream os = new PrintStream(clientSocket.getOutputStream());
-          os.println("Server at max players. Try later.");
-          os.close();
-          clientSocket.close();
-        }
-      } catch (IOException e) {
-        System.out.println(e);
-      }
+    } catch (UnknownHostException ex) {
+          Logger.getLogger(MyServer.class.getName()).log(Level.SEVERE, null,ex);
     }
   }
 }
 
-/*
- * The chat client thread. This client thread opens the input and the output
- * streams for a particular client, ask the client's name, informs all the
- * clients connected to the server about the fact that a new client has joined
- * the chat room, and as long as it receive data, echos that data back to all
- * other clients. The thread broadcast the incoming messages to all clients and
- * routes the private message to the particular client. When a client leaves the
- * chat room this thread informs also all the clients about that and terminates.
- */
+
 class clientThread extends Thread {
 
   private String clientName = null;
@@ -114,9 +102,7 @@ class clientThread extends Thread {
     clientThread[] threads = this.threads;
 
     try {
-      /*
-       * Create input and output streams for this client.
-       */
+
       is = new DataInputStream(clientSocket.getInputStream());
       os = new PrintStream(clientSocket.getOutputStream());
       String name;
@@ -130,9 +116,8 @@ class clientThread extends Thread {
         }
       }
 
-      /* Welcome the new the client. */
       os.println("Welcome " + name
-          + " to blackjack room.\nTo leave enter /quit in a new line.");
+          + " to blackjack room.");
       game.addPlayer(name);
       synchronized (this) {
         for (int i = 0; i < maxClientsCount; i++) {
@@ -148,9 +133,9 @@ class clientThread extends Thread {
           }
         }
       }
-      /* Start the conversation. */
+
       while (game.hasPlayers()) {
-          while(game.getPlayerCount()<maxClientsCount){
+          while(game.getPlayerCount()<maxClientsCount && game.hasPlayers()){
               synchronized (this) {
                 for (int i = 0; i < maxClientsCount; i++) {
                 if (threads[i] != null && threads[i].clientName != null) {
@@ -160,18 +145,57 @@ class clientThread extends Thread {
                             //System.out.println("SLEEP!");
                             Thread.sleep(4000);
                         } catch (InterruptedException ex) {
-                            Logger.getLogger(old_MyClient.class.getName()).log(Level.SEVERE, null, ex);
+                            Logger.getLogger(MyServer.class.getName()).log(Level.SEVERE, null, ex);
                         }
               }
             }
-          String line = "_";
-          game.Round();
-          synchronized (this) {
-            for (int i = 0; i < maxClientsCount; i++) {
-              if (threads[i] != null && threads[i].clientName != null) {
-                threads[i].os.println("<" + name + "> " + line);
-              }}}
-          game.EndRound();
+          int count=1;
+            game.Start();
+            String line = "";
+            while(game.hasPlayers()){
+                line = "-------Round "+count+"-------";
+                System.out.println(line);  
+                synchronized (this) {
+                for (int i = 0; i < maxClientsCount; i++) {
+                  if (threads[i] != null && threads[i].clientName != null) {
+                    threads[i].os.println(line);
+                }}}
+                game.Round();
+                synchronized (this) {
+                String dealer_out;
+                dealer_out="Dealer's Hand =";
+                    for(String o:game.getDealerHand()){
+                    dealer_out=dealer_out+" "+o;
+                    }
+                    dealer_out+=" (Points)=> "+BlackjackRules.countPoints(game.getDealerHand());
+                    
+                    System.out.println(dealer_out);
+                    synchronized (this) {
+                    for (int i = 0; i < maxClientsCount; i++) {
+                      if (threads[i] != null && threads[i].clientName != null) {
+                        threads[i].os.println(dealer_out);
+                    }}}
+                }
+                for(PlayerAbstract i: game.getPlayers()){
+                    String out;
+                    out=i.getName()+"'s Hand =";
+                    for(String o:i.getHand()){
+                    out=out+" "+o;
+                    }
+                    out+=" (Points)=> "+BlackjackRules.countPoints(i.getHand());
+                    out+=" (Bank)=> "+i.getBank();
+                    System.out.println(out);
+                    synchronized (this) {
+                    for (int p = 0; p < maxClientsCount; p++) {
+                      if (threads[p] != null && threads[p].clientName != null) {
+                        threads[p].os.println(out);
+                    }}}
+                }
+                game.EndRound();
+                count++;
+            }
+          
+
           
       }
 
@@ -184,13 +208,12 @@ class clientThread extends Thread {
           }
         }
       }
-      /*
-       * Close the output stream, close the input stream, close the socket.
-       */
+
     try{
       is.close();
       os.close();
       clientSocket.close();
+      //System.exit(0);
     } catch (IOException e) {
     }
   }   catch (IOException ex) {   

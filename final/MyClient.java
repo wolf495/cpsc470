@@ -10,6 +10,7 @@ import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
+import java.util.Scanner;
 
 public class MyClient implements Runnable {
 
@@ -26,11 +27,16 @@ public class MyClient implements Runnable {
   public static void main(String[] args) {
 
 
-    int portNumber = 4445;
-
-    String host = "localhost";
-
-
+      int portNumber;
+      String host;
+      
+      Scanner sc = new Scanner(System.in);
+      System.out.println("SERVER ADDRESS: ");
+        host = sc.nextLine();
+      
+        System.out.println("SERVER PORT: ");
+        portNumber = sc.nextInt();
+        sc.nextLine();
     try {
       clientSocket = new Socket(host, portNumber);
       inputLine = new BufferedReader(new InputStreamReader(System.in));

@@ -2,7 +2,7 @@
  * CPSC 110
  * Mar 1, 2017
  * I pledge
- * @author George
+ * @author George + alfredo
  */
 package big_project;
 
@@ -76,6 +76,8 @@ public class Game {
                 count++;
             }
         }
+        public ArrayList<String> getDealerHand(){return dealerHand;}
+        
 	public void Round() {
                 
 		//Set every players bet to their initial bet amount

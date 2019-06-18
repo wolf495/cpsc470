@@ -30,10 +30,10 @@ public class Main {
     }
     game.setUp(names);
     game.Start();
-    System.out.println(game.getPlayerCount());
+    /*System.out.println(game.getPlayerCount());
     for(PlayerAbstract i : game.getPlayers()){
         System.out.println();
-    }
+    }*/
     game.runThrough();
     
     }

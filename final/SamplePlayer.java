@@ -1,8 +1,6 @@
 /**
- * CPSC 110
- * Mar 1, 2017
- * I pledge
- * @author George
+ * CPSC 470
+ * @author Isabella
  */
 package big_project;
 import java.util.ArrayList;
@@ -14,33 +12,36 @@ public class SamplePlayer extends PlayerAbstract{
 
 	public boolean doesPlayerHit(String dealerUpCard) {
 
-		int points = BlackjackRules.countPoints(hand);
-		// implement your strategy for deciding whether to hit or not
-
-		return false;
+		int points = BlackjackRules.countPoints(this.getHand());
+		if(points > 18) {
+			return false;
+		}
+		else {
+			return true;
+		}
 	}
 
 	public int placeBet(ArrayList<String> playedCards) {
-		 bet = 10;
-		// change your bet amount here if you wish
-				
-		if (bet>bank)
-			bet = bank;
-                
-                bank -=bet;
+		if (bet>bank) {
+			bet = (int)(bank * .5);
+		}
+		else {
+			return 15;
+		}
 		return bet;
 	}
 
     public boolean quit() {
-       
-		return false;
-        
+			if(this.getBank() == 0) {
+				return false;
+			}
+			else {
+				return true;
+			}
 		}
-		
+
 		public int placeBetInitial() {
-                    bet = 10;
-                    bank-=bet;
-                    return 10;
+			return 10;
 		}
 
 }

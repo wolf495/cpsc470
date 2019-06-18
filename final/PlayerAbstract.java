@@ -1,3 +1,8 @@
+/*
+*
+*@author Isabella
+*/
+
 package big_project;
 
 import java.util.ArrayList;
@@ -56,7 +61,7 @@ public abstract class PlayerAbstract {
     public boolean gethasBlackjack() {
       return hasBlackJack;
     }
-    
+
     public void setName(String newName){
         name = newName;
     }

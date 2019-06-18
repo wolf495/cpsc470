@@ -41,42 +41,42 @@ public class Game {
                     }
 	}
 
-        public void setUp(ArrayList<String> names){
-            for(String i:names){
-            addPlayer(i);
-            }
-        }
+	public void setUp(ArrayList<String> names){
+		for(String i:names){
+		addPlayer(i);
+		}
+	}
         
-        public void runThrough(){
-            int count=1;
-            
-            while(this.hasPlayers()){
-                System.out.println("-------Round "+count+"-------");
-                Round();
-                
-                String dealer_out;
-                dealer_out="Dealer's Hand =";
-                    for(String o:dealerHand){
-                    dealer_out=dealer_out+" "+o;
-                    }
-                    dealer_out+=" (Points)=> "+BlackjackRules.countPoints(dealerHand);
-                    System.out.println(dealer_out);
-                    
-                for(PlayerAbstract i: players){
-                    String out;
-                    out=i.getName()+"'s Hand =";
-                    for(String o:i.getHand()){
-                    out=out+" "+o;
-                    }
-                    out+=" (Points)=> "+BlackjackRules.countPoints(i.getHand());
-                    out+=" (Bank)=> "+i.getBank();
-                    System.out.println(out);
-                }
-                EndRound();
-                count++;
-            }
-        }
-        public ArrayList<String> getDealerHand(){return dealerHand;}
+	public void runThrough(){
+		int count=1;
+		
+		while(this.hasPlayers()){
+			System.out.println("-------Round "+count+"-------");
+			Round();
+			
+			String dealer_out;
+			dealer_out="Dealer's Hand =";
+			for(String o:dealerHand){
+				dealer_out=dealer_out+" "+o;
+			}
+			dealer_out+=" (Points)=> "+BlackjackRules.countPoints(dealerHand);
+			System.out.println(dealer_out);
+				
+			for(PlayerAbstract i: players){
+				String out;
+				out=i.getName()+"'s Hand =";
+				for(String o:i.getHand()){
+				out=out+" "+o;
+				}
+				out+=" (Points)=> "+BlackjackRules.countPoints(i.getHand());
+				out+=" (Bank)=> "+i.getBank();
+				System.out.println(out);
+			}
+			EndRound();
+			count++;
+		}
+	}
+	public ArrayList<String> getDealerHand(){return dealerHand;}
         
 	public void Round() {
                 
@@ -152,7 +152,10 @@ public class Game {
 		clearHand(dealerHand);
                 
                 for(PlayerAbstract i : players){
-                clearHand(i.getHand());
+				clearHand(i.getHand());
+				if(i.gethasBlackjack()) {
+					i.setBlackjack(false);
+				}
                 //i.setBet(0);
                 }
                 

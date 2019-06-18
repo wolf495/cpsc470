@@ -54,27 +54,27 @@ public class Game {
             }
         }
 	public void Round() {
-                int do_it=0;
+                
 		//Set every players bet to their initial bet amount
 		for(PlayerAbstract p: players) {
-			do_it=p.placeBetInitial();
+			p.placeBetInitial();
 			System.out.println(p.getName() + " makes a bet of " + p.getBet());
 		}
 
 		//Deal one card to each player's hand from the deck
 		for(PlayerAbstract p: players) {
 			dealCard(p.getHand());
-			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
+			System.out.println(p.getName() + " is dealt a " + p.getHand().get(p.getHand().size()-1));
 		}
 
 		//Deal a card to the dealer
 		dealCard(dealerHand);
-		System.out.println("Dealer got a " + dealerHand.get(0));
+		System.out.println("Dealer got a " + dealerHand.get(dealerHand.size()-1));
 
 		//Deal a card to each player's hand again
 		for(PlayerAbstract p: players) {
 			dealCard(p.getHand());
-			System.out.println(p.getName() + " is dealt a " + p.getHand().get(0));
+			System.out.println(p.getName() + " is dealt a " + p.getHand().get(p.getHand().size()-1));
 		}
 		//Deal one last card to the dealer's hand again
 
@@ -125,13 +125,16 @@ public class Game {
 		//Clear the hands of every player and the dealer
 		collectCards();
 		clearHand(dealerHand);
-		for(PlayerAbstract p : players) {
+                
+		for(int i=0 ;i< players.size(); i++) {
 			//Check if any player has gone bust or met their quit conditions and remove them from the player's list
-			if(p.quit() || p.getBank() <= 0) {
-				players.remove(p);
-				System.out.println(p.getName() + " has left the table");
+			if(players.get(i).quit() || players.get(i).getBank() <= 0) {
+				
+				System.out.println(players.get(i).getName() + " has left the table");
+                                players.remove(players.get(i));
 			}
-		}
+                    }
+                
 	}
 	
 	public static Game getInstance() {

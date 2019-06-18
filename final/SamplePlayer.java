@@ -21,7 +21,7 @@ public class SamplePlayer extends PlayerAbstract{
 	}
 
 	public int placeBet(ArrayList<String> playedCards) {
-		int bet = 10;
+		 bet = 10;
 		// change your bet amount here if you wish
 				
 		if (bet>bank)
@@ -30,12 +30,13 @@ public class SamplePlayer extends PlayerAbstract{
 	}
 
     public boolean quit() {
-		return false;
+		return true;
         
 		}
 		
 		public int placeBetInitial() {
-			return 0;
+                    bet = 10;
+                    return 10;
 		}
 
 }

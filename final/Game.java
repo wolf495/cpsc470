@@ -48,9 +48,32 @@ public class Game {
         }
         
         public void runThrough(){
+            int count=1;
+            
             while(this.hasPlayers()){
+                System.out.println("-------Round "+count+"-------");
                 Round();
+                
+                String dealer_out;
+                dealer_out="Dealer's Hand =";
+                    for(String o:dealerHand){
+                    dealer_out=dealer_out+" "+o;
+                    }
+                    dealer_out+=" (Points)=> "+BlackjackRules.countPoints(dealerHand);
+                    System.out.println(dealer_out);
+                    
+                for(PlayerAbstract i: players){
+                    String out;
+                    out=i.getName()+"'s Hand =";
+                    for(String o:i.getHand()){
+                    out=out+" "+o;
+                    }
+                    out+=" (Points)=> "+BlackjackRules.countPoints(i.getHand());
+                    out+=" (Bank)=> "+i.getBank();
+                    System.out.println(out);
+                }
                 EndRound();
+                count++;
             }
         }
 	public void Round() {
@@ -105,15 +128,15 @@ public class Game {
 			int dealerPoints = BlackjackRules.countPoints(dealerHand);
 			int playerPoints = BlackjackRules.countPoints(p.getHand());
 			//If the dealer beat the player the player loses their bet
-			if(dealerPoints > playerPoints) {
+			if((dealerPoints > playerPoints && dealerPoints <= 21) || playerPoints > 21) {
 				p.setBet(0);
-			} else if(dealerPoints == playerPoints) {
+			} else if((dealerPoints == playerPoints) && playerPoints <= 21) {
 				//If the dealer and player match then the bet is returned to the player with no gain
 				p.setBank(p.getBank() + p.getBet());
 				p.setBet(0);
-			} else {
+			} else if((dealerPoints < playerPoints && playerPoints <= 21) || dealerPoints > 21){
 				//If the player wins they get paid their bet
-				p.setBank(p.getBank() + p.getBet() * 2);
+				p.setBank(p.getBank() + (p.getBet() * 2));
 				p.setBet(0);
 			}
 		}
@@ -125,6 +148,11 @@ public class Game {
 		//Clear the hands of every player and the dealer
 		collectCards();
 		clearHand(dealerHand);
+                
+                for(PlayerAbstract i : players){
+                clearHand(i.getHand());
+                //i.setBet(0);
+                }
                 
 		for(int i=0 ;i< players.size(); i++) {
 			//Check if any player has gone bust or met their quit conditions and remove them from the player's list
@@ -187,6 +215,7 @@ public class Game {
 	}
 
 	private boolean checkBlackjack(PlayerAbstract p) {
+            
 		if(p.getHand().contains("A") && (p.getHand().contains("K") || p.getHand().contains("Q") || p.getHand().contains("J"))) {
 			p.setBank((int)(p.getBank() + p.getBet() * 2.5));
 			clearHand(p.getHand());

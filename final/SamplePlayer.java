@@ -26,16 +26,20 @@ public class SamplePlayer extends PlayerAbstract{
 				
 		if (bet>bank)
 			bet = bank;
+                
+                bank -=bet;
 		return bet;
 	}
 
     public boolean quit() {
-		return true;
+       
+		return false;
         
 		}
 		
 		public int placeBetInitial() {
                     bet = 10;
+                    bank-=bet;
                     return 10;
 		}
 

@@ -10,6 +10,7 @@ public class PlayerBella extends PlayerAbstract {
     }
     
     public int placeBet(ArrayList<String> playedCards) {
+        //bet = 10;
         return 0;
     }
 

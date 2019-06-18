@@ -17,7 +17,9 @@ public class Factory {
         public PlayerAbstract Create(String name){
 		PlayerAbstract player;
 		try{
-			player = (PlayerAbstract)Class.forName(name).newInstance();
+                        //System.out.println("TRYING TO MAKE PLAYER: "+name);
+			player = (PlayerAbstract)Class.forName("big_project.Player"+name).newInstance();
+                        player.setName(name);
 			return player;
 		}
 	       	catch(InstantiationException e){
